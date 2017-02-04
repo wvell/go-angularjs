@@ -62,8 +62,8 @@ func MakeFuncInjectable(f interface{}) (jsFunc js.S, err error) {
 	}), nil
 }
 
-// GetFuncInjectables returns the reflect.Type's resources that have to be uses
-// to call the given function correctly.
+// GetFuncInjectables reads the function arguments and transforms them to *Inject resources.
+// If an arguments is not found the returns an error.
 func GetFuncInjectables(f interface{}) (injects []*Inject, callable reflect.Value, err error) {
 	callable = reflect.ValueOf(f)
 	if callable.Kind() != reflect.Func {
