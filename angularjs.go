@@ -24,6 +24,10 @@ func init() {
 
 // NewModule makes a new angular module
 func NewModule(name string, requires []string, configFn interface{}) *Module {
+	if configFn == nil {
+		configFn = func() {}
+	}
+
 	transformedFunc, err := MakeFuncInjectable(configFn)
 	if err != nil {
 		panic(err)
