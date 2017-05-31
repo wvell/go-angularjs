@@ -14,6 +14,36 @@ func init() {
 	RegisterResource(reflect.TypeOf(&RouteParams{}), "$routeParams", func(obj *js.Object) reflect.Value {
 		return reflect.ValueOf(&RouteParams{Object: obj})
 	})
+
+	RegisterResource(reflect.TypeOf(&Location{}), "$location", func(obj *js.Object) reflect.Value {
+		return reflect.ValueOf(&Location{Object: obj})
+	})
+
+	RegisterResource(reflect.TypeOf(&LocationProvider{}), "$locationProvider", func(obj *js.Object) reflect.Value {
+		return reflect.ValueOf(&LocationProvider{Object: obj})
+	})
+
+}
+
+type LocationProvider struct {
+	*js.Object
+}
+
+func (l *LocationProvider) Html5Mode(on bool) {
+	l.Call("html5Mode", on)
+}
+
+// Location implements $location
+type Location struct {
+	*js.Object
+}
+
+func (l *Location) Path(p string) {
+	l.Call("path", p)
+}
+
+func (l *Location) CurrentPath() string {
+	return l.Call("path").String()
 }
 
 // RouteProvider implements $routeProvider

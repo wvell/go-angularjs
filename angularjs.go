@@ -13,7 +13,9 @@ func init() {
 	})
 
 	RegisterResource(reflect.TypeOf(&RootScope{}), "$rootScope", func(obj *js.Object) reflect.Value {
-		return reflect.ValueOf(&RootScope{Object: obj})
+		return reflect.ValueOf(&RootScope{
+			&Scope{Object: obj},
+		})
 	})
 
 	RegisterResource(reflect.TypeOf(&Q{}), "$q", func(obj *js.Object) reflect.Value {
@@ -42,6 +44,16 @@ func Service(name string) *js.Object {
 
 // Module is an angular module
 type Module struct{ *js.Object }
+
+// Run is the go implementation of .run in angularjs
+func (m *Module) Run(fn interface{}) {
+	transformedFunc, err := MakeFuncInjectable(fn)
+	if err != nil {
+		panic(err)
+	}
+
+	m.Call("run", transformedFunc)
+}
 
 // NewController creates a new controller on the given module
 // The arguments of the controller should only contain resources that have
@@ -119,7 +131,9 @@ type Directive struct {
 }
 
 // RootScope is the angular $rootScope
-type RootScope Scope
+type RootScope struct {
+	*Scope
+}
 
 // Scope is the angular $scope
 type Scope struct {
