@@ -38,6 +38,26 @@ type Location struct {
 	*js.Object
 }
 
+type LocationSearch map[string]string
+
+func (l LocationSearch) Has(key string) bool {
+	_, ok := l[key]
+	return ok
+}
+
+func (l LocationSearch) Get(key string) string {
+	return l[key]
+}
+
+func (l *Location) Search() LocationSearch {
+	ret := make(LocationSearch)
+	for key, val := range l.Call("search").Interface().(map[string]interface{}) {
+		ret[key] = val.(string)
+	}
+
+	return ret
+}
+
 func (l *Location) Path(p string) {
 	l.Call("path", p)
 }
